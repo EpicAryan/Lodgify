@@ -1,30 +1,44 @@
-import React
-, { useContext } from "react";
+import React, { useContext, useState } from "react";
+import Toast from "../components/Toast";
 
 type ToastMessage = {
-    message: string;
-    type: "SUCCESS"|"ERROR";
-}
+  message: string;
+  type: "SUCCESS" | "ERROR";
+};
 //type for toast messages
 type AppContext = {
-    showToast: (toastMessage: ToastMessage)=>void;
-}
+  showToast: (toastMessage: ToastMessage) => void;
+};
 //Constructing the context
 const AppContext = React.createContext<AppContext | undefined>(undefined);
 //Constructing the provider
-export const AppContextProvider = ({ children } : { children: React.ReactNode }) => {
-    return (
-        <AppContext.Provider value={{
-            showToast: (toastMessage) => {
-                console.log(toastMessage);
-            }
-        }}>
-            {children}
-        </AppContext.Provider>
-    );
+export const AppContextProvider = ({
+  children,
+}: {
+  children: React.ReactNode;
+}) => {
+  const [toast, setToast] = useState<ToastMessage | undefined>(undefined);//state to manage toast
+  return (
+    <AppContext.Provider
+      value={{
+        showToast: (toastMessage) => {
+          setToast(toastMessage);
+        },
+      }}
+    >
+      {toast && (
+        <Toast
+          message={toast.message}
+          type={toast.type}
+          onClose={() => setToast(undefined)}
+        />
+      )}
+      {children}
+    </AppContext.Provider>
+  );
 };
 //constructing the hook
 export const useAppContext = () => {
-    const context = useContext(AppContext);
-    return context as AppContext;
-}
+  const context = useContext(AppContext);
+  return context as AppContext;
+};
