@@ -7,7 +7,7 @@ import authRoutes from './routes/auth';
 import cookieParser from 'cookie-parser';
 
 mongoose.connect(process.env.MONGO_DB as string).then(() => {
-    console.log("Connected to MongoDB");
+    console.log("Connected to database");
   }).catch((err) => {
     console.log(err);
 });
